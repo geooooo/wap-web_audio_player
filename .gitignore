@@ -1,0 +1,7 @@
+node_modules
+_tmp
+
+**/*.js
+!gulpfile.js
+**/*.css
+**/*.html

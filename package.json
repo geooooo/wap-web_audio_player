@@ -1,0 +1,23 @@
+{
+    "name": "wap-web_audio_player",
+    "version": "0.0.1",
+    "description": "WAP - audio player on web technologys",
+    "keywords": [
+        "web",
+        "audio",
+        "player"
+    ],
+    "author": "Iurii Kornienko",
+    "license": "MIT",
+    "main": "",
+    "scripts": {},
+    "devDependencies": {
+        "gulp": "^4.0.0",
+        "gulp-pug": "^3.3.0",
+        "gulp-sass": "^3.1.0",
+        "gulp-scss": "^1.4.0",
+        "gulp-typescript": "^3.2.3",
+        "typescript": "^2.6.2"
+    },
+    "dependencies": {}
+}
