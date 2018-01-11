@@ -1,0 +1,180 @@
+@import '../../base/default.scss';
+
+
+// ============= Раздел переменных ============= //
+
+
+$panel-bg-color: #414A59;
+
+$vscroll-width: 15px;
+$vscroll-border-radius: $vscroll-width * 2;
+$vscroll-bg-color: #676C78;
+
+$audio-track-padding: 5px;
+$audio-track-font-size: 1.2em;
+$audio-track-color: #B0BBCA;
+$audio-track-color-hover: white;
+$audio-track-bg-color-played: #676C78;
+$audio-track-bg-color-selected: #418FE0;
+
+$panel-animation-speedk: 5;
+
+
+// ================ Анимации ==================== //
+
+
+@keyframes animation-played {
+    from {
+        background-color: transparent;
+    }
+    to {
+        background-color: $audio-track-bg-color-played;
+    }
+}
+
+
+@keyframes animation-selected {
+    from {
+        background-color: transparent;
+    }
+    to {
+        background-color: $audio-track-bg-color-selected;
+        color: $audio-track-color-hover;
+    }
+}
+
+
+@keyframes animation-slide-left-down {
+    from {
+        width: 100%;
+        opacity: 1;
+    }
+    to {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+
+@keyframes animation-slide-left-up {
+    from {
+        width: 0;
+        opacity: 0;
+    }
+    to {
+        width: 100%;
+        opacity: 1;
+    }
+}
+
+
+// ================ Панель ==================== //
+
+
+.panel {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: $panel-bg-color;
+
+    overflow: hidden;
+
+
+    &:hover .panel__vscroll {
+        @include animate_once(animation-show, $animation-duration);
+    }
+}
+
+
+.panel_hide {
+    @include animate_once(
+        animation-slide-left-down,
+        $animation-duration * $panel-animation-speedk);
+}
+
+
+.panel_show {
+    @include animate_once(
+        animation-slide-left-up,
+        $animation-duration * $panel-animation-speedk);
+}
+
+
+.panel__vscroll {
+    margin-left: -$vscroll-width;
+    border-radius: $vscroll-border-radius;
+    width: $vscroll_width;
+    height: 0;
+
+    background-color: $vscroll-bg-color;
+
+    opacity: 0;
+    cursor: pointer;
+}
+
+
+.panel__vscroll_hidden {
+    display: none;
+}
+
+
+// ================ Аудио-лист ==================== //
+
+
+.track-list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+
+    width: 100%;
+
+    font-size: 1rem;
+
+    color: $audio-track-color;
+}
+
+
+// ================ Аудио-трэк ==================== //
+
+
+.audio-track {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+
+    padding: $audio-track-padding;
+
+    cursor: pointer;
+    transition: color $animation-duration $animation-time-func;
+
+
+    &:hover {
+        color: $audio-track-color-hover;
+    }
+}
+
+
+.audio-track_played {
+    @include animate_once(animation-played, $animation-duration);
+}
+
+
+.audio-track_selected {
+    @include animate_once(animation-selected, $animation-duration);
+}
+
+
+.audio-track__title {
+    font-size: $audio-track-font-size;
+}
+
+
+.audio-track__time {
+    padding-right: $vscroll-width;
+
+    line-height: $audio-track-font-size;
+}

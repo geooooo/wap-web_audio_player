@@ -1,26 +1,32 @@
-//
-// ============= Раздел переменных =============
-//
+// ============= Раздел переменных ============= //
+
 
 $speed-slow: 0.5s;
 $speed-normal: 0.8s;
 $speed-fast: 1s;
 
 
-//
-// Анимация для полос эквалайзера: изменение высоты
-//
-@keyframes level-animate {
+// ================ Анимации ==================== //
+
+
+@keyframes level-animation {
     from {
-        // Минимум
         height: 0;
         y: 143px;
     }
     to {
-        // Максимум
         height: 86px;
         y: 57px;
     }
+}
+
+
+// ================ Эквалайзер ==================== //
+
+
+.equalizer {
+    width: 100%;
+    height: 100%;
 }
 
 
@@ -28,7 +34,7 @@ $speed-fast: 1s;
 // Анимированность эквалайзера
 //
 .equalizer__level_animated {
-    animation: level-animate;
+    animation: level-animation;
 }
 
 
@@ -59,9 +65,8 @@ $speed-fast: 1s;
 }
 
 
-//
-// ============= Разные анимационные функции для полос =============
-//
+// ============= Разные анимационные функции для полос ============= //
+
 
 .equalizer__level_animate-func-ease {
     animation-timing-function: ease;
@@ -84,9 +89,8 @@ $speed-fast: 1s;
 }
 
 
-//
-// ============= Разная скорость анимации для полос ========
-//
+// ============= Разная скорость анимации для полос ======== //
+
 
 .equalizer__level_animate-duration-slow {
     animation-duration: $speed-fast;
