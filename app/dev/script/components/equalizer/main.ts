@@ -32,7 +32,7 @@ namespace Equalizer {
         private _levels: HTMLCollectionOf<Element>;
 
 
-        // =================== public методы =================== //
+        // =================== private методы =================== //
 
 
         //
@@ -42,6 +42,9 @@ namespace Equalizer {
             // Получение доспута к полосам экзвалайзера
             this._levels = document.getElementsByClassName('equalizer__level');
         }
+
+
+        // =================== public методы =================== //
 
 
         //
@@ -114,6 +117,6 @@ namespace Equalizer {
     }
 
 
-    export const instance = Equalizer.getInstance();
+    export const getInstance = Equalizer.getInstance;
 
 }

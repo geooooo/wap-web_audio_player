@@ -1,5 +1,5 @@
 //
-//
+// Список аудио-треков
 //
 
 
@@ -9,13 +9,13 @@ script(src='script/components/track-list/main.js')
 
 .panel
     .track-list
-        .audio-track.audio-track_played
+        .audio-track.audio-track_played(data-src='/home/abc/eminem.mp3')
             .audio-track__title Eminem - Apologies
             .audio-track__time 03:15
-        .audio-track.audio-track_selected
+        .audio-track.audio-track_selected(data-src='/home/abc/sabaton1.mp3')
             .audio-track__title Sabaton - Panzerkampf
             .audio-track__time 04:12
-        .audio-track
+        .audio-track(data-src='/home/abc/sabaton2.mp3')
             .audio-track__title Sabaton - Primo Victoria
             .audio-track__time 04:00
     .panel__vscroll
