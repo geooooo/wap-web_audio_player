@@ -11,14 +11,14 @@ namespace TrackList {
         // Singleton - экземепляр
         private static _instance: TrackList = null;
 
-        // Полоса прокрутки
-        private _vscroll: Element;
-
         // Список треков
         private _track_list: Element;
 
         // Проигрываемый трэк
         private _played_audio_track: Element = null;
+
+        // Первый трэк
+        private _first_audio_track: any = null;
 
         // Выбранные трэки
         private _selected_audio_tracks: Element[] = [];
@@ -54,8 +54,6 @@ namespace TrackList {
         private elementsBind(): void {
             // Получение доступа к панели трэк-листа
             this._panel = document.getElementsByClassName('panel')[0];
-            // Получение доступа к полосе прокрутки
-            this._vscroll = document.getElementsByClassName('panel__vscroll')[0];
             // Получение доступа к трэк-листу
             this._track_list = document.getElementsByClassName('track-list')[0];
         }
@@ -94,12 +92,75 @@ namespace TrackList {
                     }
                 }
             });
+            // Отображение подсказки для прокрутки
+            this._track_list.addEventListener('mousemove', (e: Event) => {
+                if (this.isCanScrollTop()) {
+                    this._track_list.classList.add('track-list_border-top');
+                }
+                if (this.isCanScrollBottom()) {
+                    this._track_list.classList.add('track-list_border-bottom');
+                }
+            });
+            this._track_list.addEventListener('mouseleave', (e: Event) => {
+                this._track_list.classList.remove('track-list_border-top');
+                this._track_list.classList.remove('track-list_border-bottom');
+            });
+            // Прокрутка списка трэков
+            this._track_list.addEventListener('wheel', (e: any) => {
+                // Скорость прокрутки
+                const delta: number = 10;
+                if (this._first_audio_track == null) {
+                    return;
+                }
+                let marginTop: number = parseInt(this._first_audio_track.style.marginTop);
+                if (e.deltaY > 0) {
+                    // вниз
+                    let diff: number = this._track_list.scrollHeight - this._track_list.clientHeight;
+                    if (diff < 0) {
+                        // "докрутка" до конца
+                        this._first_audio_track.style.marginTop = `${diff}px`;
+                    } else if (diff > 0) {
+                        this._first_audio_track.style.marginTop = `${marginTop - delta}px`;
+                    }
+                } else if (marginTop != 0) {
+                    // вверх
+                    this._first_audio_track.style.marginTop = `${marginTop + delta}px`;
+                }
+                // Подстветка прокрутки
+                if (this.isCanScrollTop()) {
+                    this._track_list.classList.add('track-list_border-top');
+                } else {
+                    this._track_list.classList.remove('track-list_border-top');
+                }
+                if (this.isCanScrollBottom()) {
+                    this._track_list.classList.add('track-list_border-bottom');
+                } else {
+                    this._track_list.classList.remove('track-list_border-bottom');
+                }
+            });
             // Нажатие клавиши - удаление по del
             window.addEventListener('keypress', (e: any) => {
                 if (e.key == 'Delete') {
                     this.delSelectedAudiotracks();
                 }
             });
+        }
+
+
+        //
+        // Проверка возможности прокрутки вверх
+        //
+        private isCanScrollTop(): boolean {
+            return (this._first_audio_track != null) &&
+                   (parseInt(this._first_audio_track.style.marginTop) != 0);
+        }
+
+
+        //
+        // Проверка возможности прокрутки вниз
+        //
+        private isCanScrollBottom(): boolean {
+            return (this._track_list.scrollHeight - this._track_list.clientHeight) > 0;
         }
 
 
@@ -135,6 +196,10 @@ namespace TrackList {
             });
             this.refactIds();
             this._selected_audio_tracks = [];
+            this._first_audio_track = this._track_list.getElementsByClassName('audio-track')[0] || null;
+            if (this._first_audio_track) {
+                this._first_audio_track.style.marginTop = 0;
+            }
         }
 
 
@@ -228,6 +293,8 @@ namespace TrackList {
                 this.getAudiotrackTime(files[i]).then((time: string) => {
                     this.addAudiotrack(files[i].name, time, id);
                     this.refactIds();
+                    this._first_audio_track = this._track_list.getElementsByClassName('audio-track')[0];
+                    this._first_audio_track.style.marginTop = 0;
                 });
             }
         }
