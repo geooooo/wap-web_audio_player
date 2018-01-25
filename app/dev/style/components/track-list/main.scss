@@ -47,11 +47,9 @@ $panel-animation-speedk: 5;
 @keyframes animation-slide-left-down {
     from {
         width: 100%;
-        opacity: 1;
     }
     to {
         width: 0;
-        opacity: 0;
     }
 }
 
@@ -59,11 +57,9 @@ $panel-animation-speedk: 5;
 @keyframes animation-slide-left-up {
     from {
         width: 0;
-        opacity: 0;
     }
     to {
         width: 100%;
-        opacity: 1;
     }
 }
 
