@@ -18,7 +18,7 @@ namespace TrackList {
         private _played_audio_track: Element = null;
 
         // Первый трэк
-        private _first_audio_track: any = null;
+        private _first_audio_track: Element = null;
 
         // Выбранные трэки
         private _selected_audio_tracks: Element[] = [];
@@ -30,10 +30,10 @@ namespace TrackList {
         private _files: File[] = [];
 
         // Случаен ли следующий трэк
-        private _is_random_next = false;
+        private _is_random_next: boolean = false;
 
         // Зациклить текущий трэк
-        private _is_loop_current = false;
+        private _is_loop_current: boolean = false;
 
 
         // =================== private методы =================== //
@@ -65,7 +65,7 @@ namespace TrackList {
         private eventsBind(): void {
             // Drag and Drop файлов в трэк-лист
             let self = this;
-            this._panel.addEventListener('drop', (e: any) => {
+            this._panel.addEventListener('drop', (e: Event) => {
                 e.preventDefault();
                 self.addDropFiles(e.dataTransfer.files);
             }, false);
@@ -76,12 +76,12 @@ namespace TrackList {
                 e.preventDefault();
             });
             // Выделение и воспроизведение трэков
-            this._track_list.addEventListener('click', (e: any) => {
+            this._track_list.addEventListener('click', (e: Event) => {
                 // Для выделения требуется нажатие ctrl
                 // Для любых других кликов - воспроизведение
                 if (e.target.className.indexOf('audio-track') != -1) {
                     // Получение элемента с классом audio-track
-                    let target: any = e.target;
+                    let target: Element = e.target;
                     while (!target.classList.contains('audio-track')) {
                         target = target.parentNode;
                     }
@@ -106,7 +106,7 @@ namespace TrackList {
                 this._track_list.classList.remove('track-list_border-bottom');
             });
             // Прокрутка списка трэков
-            this._track_list.addEventListener('wheel', (e: any) => {
+            this._track_list.addEventListener('wheel', (e: Event) => {
                 // Скорость прокрутки
                 const delta: number = 10;
                 if (this._first_audio_track == null) {
@@ -139,7 +139,7 @@ namespace TrackList {
                 }
             });
             // Нажатие клавиши - удаление по del
-            window.addEventListener('keypress', (e: any) => {
+            window.addEventListener('keypress', (e: Event) => {
                 if (e.key == 'Delete') {
                     this.delSelectedAudiotracks();
                 }
