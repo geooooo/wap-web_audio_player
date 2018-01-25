@@ -81,17 +81,16 @@ namespace TrackList {
             this._track_list.addEventListener('click', (e: any) => {
                 // Для выделения требуется нажатие ctrl
                 // Для любых других кликов - воспроизведение
-                if (e.target.classList.contains('audio-track')) {
-                    if (e.ctrlKey) {
-                        this.toggleSelected(e.target);
-                    } else {
-                        this.setPlayed(e.target);
+                if (e.target.className.indexOf('audio-track') != -1) {
+                    // Получение элемента с классом audio-track
+                    let target: any = e.target;
+                    while (!target.classList.contains('audio-track')) {
+                        target = target.parentNode;
                     }
-                } else if (e.target.parentNode.classList.contains('audio-track')) {
                     if (e.ctrlKey) {
-                        this.toggleSelected(e.target.parentNode);
+                        this.toggleSelected(target);
                     } else {
-                        this.setPlayed(e.target.parentNode);
+                        this.setPlayed(target);
                     }
                 }
             });
@@ -254,14 +253,17 @@ namespace TrackList {
             let audiotrack: Element = document.createElement('div');
             audiotrack.classList.add('audio-track');
             audiotrack.setAttribute('data-id', String(id));
+            let __content: Element = document.createElement('div');
+            __content.classList.add('audio-track__content');
             let __title: Element = document.createElement('div');
             __title.classList.add('audio-track__title');
             __title.innerHTML = name;
             let __time: Element = document.createElement('div');
             __time.classList.add('audio-track__time');
             __time.innerHTML = time;
-            audiotrack.appendChild(__title);
-            audiotrack.appendChild(__time);
+            __content.appendChild(__title);
+            __content.appendChild(__time);
+            audiotrack.appendChild(__content);
             this._track_list.appendChild(audiotrack);
         }
 
