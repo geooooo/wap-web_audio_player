@@ -70,19 +70,13 @@
 
 </svg>
 
-<button @click="play">play</button>
-<button @click="pause">pause</button>
-<button @click="stop">stop</button>
-
-<div>isPaused: {{isPaused}}</div>
-<div>isPlayed: {{isPlayed}}</div>
-<div>isStoped: {{isStoped}}</div>
-
 </div>
 </template>
 
 
 <script>
+import {eventEmitter} from "../main";
+
 export default {
 
   data() {
@@ -137,70 +131,76 @@ export default {
 
   },
 
+  mounted() {
+      eventEmitter.$on("play-equalizer",  () => this.play());
+      eventEmitter.$on("pause-equalizer", () => this.pause());
+      eventEmitter.$on("stop-equalizer",  () => this.stop());
+  }
+
 };
 </script>
 
 
 <style scoped lang="scss">
-    @import "../color-schema.scss";
+@import "../color-schema.scss";
 
-    .equalizer {
-        fill: $bg-color-main-back;
+.equalizer {
+    fill: $bg-color-main-back;
 
-        &__level {
-            width: 10px;
-            fill: $element-color-inactive;
-            animation-direction: alternate;
-            animation-iteration-count: 0;
+    &__level {
+        width: 10px;
+        fill: $element-color-1-inactive;
+        animation-direction: alternate;
+        animation-iteration-count: 0;
 
-            // Для каждой полоски задаётся случайная высота,
-            // анимация со случайной скоростью
-            // и случайная анимационная функция
-            @for $i from 1 to 11 {
-                $animation-duration: random(4) / random(5) + s;
-                $max-height: random(100);
-                $function-number: random(5);
-                $animation-function: linear;
+        // Для каждой полоски задаётся случайная высота,
+        // анимация со случайной скоростью
+        // и случайная анимационная функция
+        @for $i from 1 to 11 {
+            $animation-duration: random(4) / random(5) + s;
+            $max-height: random(100);
+            $function-number: random(5);
+            $animation-function: linear;
 
-                @if $function-number == 1 {
-                    $animation-function: ease;
-                } @else if $function-number == 2 {
-                    $animation-function: ease-in;
-                } @else if $function-number == 3 {
-                    $animation-function: ease-out;
-                } @else {
-                    $animation-function: ease-in-out;
+            @if $function-number == 1 {
+                $animation-function: ease;
+            } @else if $function-number == 2 {
+                $animation-function: ease-in;
+            } @else if $function-number == 3 {
+                $animation-function: ease-out;
+            } @else {
+                $animation-function: ease-in-out;
+            }
+
+            @keyframes level-move-#{$i} {
+                from {
+                    y: 143px;
+                    height: 0;
                 }
-
-                @keyframes level-move-#{$i} {
-                    from {
-                        y: 143px;
-                        height: 0;
-                    }
-                    to {
-                        y: (143 - $max-height) + px;
-                        height: $max-height + px;
-                    }
-                }
-
-                &:nth-child(#{$i}) {
-                    animation-duration: $animation-duration;
-                    animation-timing-function: $animation-function;
-                }
-
-                &_play:nth-child(#{$i}) {
-                    animation-name: level-move-#{$i};
+                to {
+                    y: (143 - $max-height) + px;
+                    height: $max-height + px;
                 }
             }
 
-            &_play {
-                animation-iteration-count: infinite;
+            &:nth-child(#{$i}) {
+                animation-duration: $animation-duration;
+                animation-timing-function: $animation-function;
             }
 
-            &_pause {
-                animation-play-state: paused;
+            &_play:nth-child(#{$i}) {
+                animation-name: level-move-#{$i};
             }
         }
+
+        &_play {
+            animation-iteration-count: infinite;
+        }
+
+        &_pause {
+            animation-play-state: paused;
+        }
     }
+}
 
 </style>
