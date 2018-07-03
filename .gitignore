@@ -1,11 +1,4 @@
-node_modules
+.vscode
+node_modules/
 _tmp
-
-app/build
-
 package-lock.json
-
-**/*.js
-!gulpfile.js
-**/*.css
-**/*.html
