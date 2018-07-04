@@ -1,13 +1,15 @@
 /* Цветовая схема интерфейса приложения */
 
-$bg-color-main-front: #222D32;
-$bg-color-main-back: #29353B;
+$color-main-back: #222D32;
+$color-main-front: #29353B;
 
-$element-color-1-inactive: #05aac0;
-$element-color-1-active: #00bcd4;
+$color-element-1-inactive: #05aac0;
+$color-element-1-active: #00bcd4;
 
-$element-color-2-inactive: #d3dae3;
-$element-color-2-active: #cfd8dc;
+$color-element-2-inactive: #d3dae3;
+$color-element-2-active: #cfd8dc;
+
+// $element-bg-color: #243035;
 
 // $bg-colors: (
 //     1: #222d32,

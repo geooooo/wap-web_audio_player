@@ -143,13 +143,16 @@ export default {
 
 <style scoped lang="scss">
 @import "../color-schema.scss";
+@import "../base.scss";
 
 .equalizer {
-    fill: $bg-color-main-back;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
+    fill: $color-main-front;
 
     &__level {
         width: 10px;
-        fill: $element-color-1-inactive;
+        fill: $color-element-1-inactive;
         animation-direction: alternate;
         animation-iteration-count: 0;
 

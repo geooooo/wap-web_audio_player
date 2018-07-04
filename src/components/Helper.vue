@@ -44,11 +44,12 @@ export default {
 
 <style scoped lang="scss">
 @import "../color-schema.scss";
+@import "../base.scss";
 
 .helper {
     opacity: 0;
-    animation-duration: 0.2s;
-    animation-timing-function: linear;
+    animation-duration: $animation-duration;
+    animation-timing-function: $animation-timing-function;
     animation-fill-mode: forwards;
     animation-iteration-count: 1;
 
@@ -61,7 +62,7 @@ export default {
     }
 
     &__text {
-        color: $element-color-2-inactive;
+        color: $color-element-2-inactive;
         font-size: 1.2rem;
     }
 }
