@@ -32,14 +32,50 @@
       <button @click="()=>this.moveLine2Value = 0">=> 0</button>
     </div>
 
+    <flatButton
+      :type="'prev'"
+      @click="prevClick">
+    </flatButton>
+
+    <flatButton
+      :type="'next'"
+      @click="nextClick">
+    </flatButton>
+
+    <flatButton
+      :type="'play'"
+      @click="playClick">
+    </flatButton>
+
+    <flatButton
+      :type="'pause'"
+      @click="pauseClick">
+    </flatButton>
+
+    <flatButton
+      :type="'list'"
+      @click="listClick">
+    </flatButton>
+
+    <flatButton
+      :type="'random'"
+      @click="randomClick">
+    </flatButton>
+
+    <flatButton
+      :type="'loop'"
+      @click="loopClick">
+    </flatButton>
+
 </div>
-</template>
+</template>prev
 
 
 <script>
 import equalizer from "./components/Equalizer";
 import helper from "./components/Helper";
 import moveLine from "./components/MoveLine";
+import flatButton from "./components/FlatButton";
 import {eventEmitter} from "./main";
 
 export default {
@@ -48,6 +84,7 @@ export default {
     equalizer,
     helper,
     moveLine,
+    flatButton,
   },
 
   data() {
@@ -78,6 +115,34 @@ export default {
 
     hideHelper() {
       eventEmitter.$emit("hide-helper");
+    },
+
+    nextClick() {
+      console.log("+");
+    },
+
+    prevClick() {
+      console.log("+");
+    },
+
+    playClick() {
+      console.log("+");
+    },
+
+    pauseClick() {
+      console.log("+");
+    },
+
+    loopClick() {
+      console.log("+");
+    },
+
+    randomClick() {
+      console.log("+");
+    },
+
+    listClick() {
+      console.log("+");
     },
 
   },

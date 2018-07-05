@@ -111,13 +111,13 @@ export default {
 
 .move-line {
     width: 100%;
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
+    border-bottom-left-radius: $border-radius + 1px;
+    border-bottom-right-radius: $border-radius + 1px;
     background-color: $color-main-front;
 
     &_top-rounded {
-        border-top-left-radius: $border-radius;
-        border-top-right-radius: $border-radius;
+        border-top-left-radius: $border-radius + 1px;
+        border-top-right-radius: $border-radius + 1px;
     }
 
     &__bar {
@@ -128,11 +128,12 @@ export default {
         transition-duration: $animation-duration;
         transition-timing-function: $animation-timing-function;
         transition-property: background-color;
+    }
 
-        &:hover,
-        &:active {
-            background-color: $color-element-1-active;
-        }
+    &:hover &__bar,
+    &:active &__bar{
+        background-color: $color-element-1-active;
+        box-shadow: $box-shadow;
     }
 }
 
