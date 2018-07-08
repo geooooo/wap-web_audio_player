@@ -63,7 +63,7 @@ export default {
 
     &__text {
         color: $color-element-2-inactive;
-        font-size: 1.2rem;
+        font-family: Sans;
     }
 }
 

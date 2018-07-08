@@ -114,9 +114,9 @@ export default {
     }
 
     &__level {
-        margin-right: 10px;
+        margin-right: 5px;
         height: 0;
-        width: 20px;
+        width: 15px;
         background-color: $color-element-1-inactive;
         animation-direction: alternate;
         animation-iteration-count: 0;
@@ -130,7 +130,7 @@ export default {
         // и случайная анимационная функция
         @for $i from 1 to 11 {
             $animation-duration: random(4) / random(5) + s;
-            $max-height: random(100);
+            $max-height: random(80);
             $function-number: random(5);
             $animation-function: linear;
 

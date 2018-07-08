@@ -1,11 +1,18 @@
 <template>
 <div
+    ref="trackList"
     @drop.prevent.stop="addDropFiles($event.dataTransfer.files)"
     @drag.prevent.stop
     @dragover.prevent.stop
-    class="track-list">
+    @dragleave.stop.self.prevent="dragleave"
+    @dragenter="dragenter"
+    class="track-list track-list_c">
 
     <div class="light"></div>
+
+    <div ref="emptyText" class="track-list__empty-text">
+        Перетащите сюда свои треки
+    </div>
 
     <div class="track-list__container">
 
@@ -15,6 +22,7 @@
             :title="track.title"
             :time="track.time"
             :played="track.played"
+            :selected="track.selected"
             @click="trackClick($event, track, id)">
         </ttrack>
 
@@ -49,10 +57,24 @@ export default {
   },
 
   methods: {
+
+    dragleave() {
+      this.$refs.emptyText.classList.remove("track-list__empty-text_strong");
+    },
+
+    dragenter() {
+      this.$refs.emptyText.classList.add("track-list__empty-text_strong");
+    },
+
     // Удаление выделенных трэков
     deleteSelected() {
       this.tracks = this.tracks.filter(track => !track.selected);
       this.selectedTracks = [];
+      if (this.tracks.length === 0) {
+          // Показ текста при пустом списке
+          this.$refs.emptyText.style.display = "";
+          this.$refs.trackList.classList.add("track-list_c");
+      }
     },
 
     prev() {
@@ -97,6 +119,9 @@ export default {
 
     // Добавление перетаскиваемых файлов
     addDropFiles(files) {
+      // Скрытие текста
+      this.$refs.emptyText.style.display = "none";
+      this.$refs.trackList.classList.remove("track-list_c");
       // Добавление файлов в список и исключение повторных
       for (let i = 0; i < files.length; ++i) {
         if (this.isFileExists(files[i].name)) {
@@ -242,6 +267,40 @@ export default {
   min-width: 300px;
   background-color: $color-main-front;
   overflow: hidden;
+
+  &_c {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  .track-list__empty-text {
+    display: flex;
+    align-items: center;
+    font-family: Sans;
+    font-size: 1.2rem;
+    color: darken($color-main-back, 2);
+    animation-name: empty-text-move-ease;
+    animation-duration: 2s;
+    animation-timing-function: $animation-timing-function;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+
+    &_strong {
+      animation-name: empty-text-move-normal;
+      animation-duration: 0.5s;
+    }
+
+    &::before {
+        content: "";
+        display: inline-block;
+        margin-right: 10px;
+        width: 30px;
+        height: 30px;
+        background-image: url("../img/gray-pic.svg");
+        background-size: cover;
+    }
+  }
 }
 
 .light {
@@ -259,6 +318,24 @@ export default {
   &_far {
     animation-name: light-actived, light-far;
   }
+}
+
+@keyframes empty-text-move-ease {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(15deg);
+    }
+}
+
+@keyframes empty-text-move-normal {
+    from {
+        transform: rotateY(0deg);
+    }
+    to {
+        transform: rotateY(45deg);
+    }
 }
 
 @keyframes light-actived {

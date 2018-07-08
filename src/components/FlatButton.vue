@@ -270,12 +270,14 @@ export default {
   &_rect {
     width: 30px;
     height: 30px;
+    border-color: $color-main-back;
+    background-color: $color-main-back;
     border-radius: $border-radius;
   }
 
   &_down {
-    border-color: $color-main-back;
-    background-color: $color-main-back;
+     border: 2px solid $color-element-1-inactive;
+      background-color: $color-main-front;
   }
 
   &__pic {

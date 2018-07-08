@@ -3,79 +3,88 @@
 
     <div class="app__left">
 
-      <div class="app__top">
-        <equalizer></equalizer>
-        <helper></helper>
-        <move-line
-          v-model="time"
-          @mousemove="showHelper('TODO: время')"
-          @mouseleave="hideHelper"
-          :height="20"
-          :topRound="false"
-          :maxValue="100"></move-line>
-      </div>
+      <div class="app__inputs">
 
-      <div class="app__bottom">
-
-        <div class="app__container app__container_v">
+        <div class="app__top">
+          <equalizer></equalizer>
+          <helper></helper>
           <move-line
-            @mousemove="showHelper('TODO: громкость')"
+            v-model="time"
+            @mousemove="showHelper('TODO: время')"
             @mouseleave="hideHelper"
-            v-model="volume"
-            :height="10"
+            :height="20"
+            :topRound="false"
             :maxValue="100"></move-line>
-          <move-line
-            @mousemove="showHelper('TODO: скорость')"
-            @mouseleave="hideHelper"
-            v-model="speed"
-            :height="10"
-            :maxValue="200"></move-line>
         </div>
 
-        <div class="app__container app__container_c">
-          <flatButton
-            :type="'prev'"
-            @click="prevClick">
-          </flatButton>
+        <div class="app__bottom">
 
-          <flatButton
-            v-show="showPlay"
-            :type="'play'"
-            @click="playClick">
-          </flatButton>
-          <flatButton
-            v-show="!showPlay"
-            :type="'pause'"
-            @click="pauseClick">
-          </flatButton>
+          <div class="app__container app__container_v">
+            <move-line
+              @mousemove="showHelper('TODO: громкость')"
+              @mouseleave="hideHelper"
+              v-model="volume"
+              :height="10"
+              :maxValue="100"></move-line>
+            <move-line
+              @mousemove="showHelper('TODO: скорость')"
+              @mouseleave="hideHelper"
+              v-model="speed"
+              :height="10"
+              :maxValue="200"></move-line>
+          </div>
 
-          <flatButton
-            :type="'next'"
-            @click="nextClick">
-          </flatButton>
-        </div>
+          <div class="app__container app__container_c">
+            <flatButton
+              :type="'prev'"
+              @click="prevClick">
+            </flatButton>
+
+            <flatButton
+              v-show="showPlay"
+              :type="'play'"
+              @click="playClick">
+            </flatButton>
+            <flatButton
+              v-show="!showPlay"
+              :type="'pause'"
+              @click="pauseClick">
+            </flatButton>
+
+            <flatButton
+              :type="'next'"
+              @click="nextClick">
+            </flatButton>
+          </div>
 
         <div class="app__container app__container_r">
-          <flatButton
-            @mousemove="showHelperList"
-            @mouseleave="hideHelper"
-            :type="'list'"
-            @click="listClick">
-          </flatButton>
-          <flatButton
-            @mousemove="showHelperRandom"
-            @mouseleave="hideHelper"
-            :type="'random'"
-            @click="randomClick">
-          </flatButton>
-          <flatButton
-            @mousemove="showHelperLoop"
-            @mouseleave="hideHelper"
-            :type="'loop'"
-            @click="loopClick">
-          </flatButton>
+            <flatButton
+              @mousemove="showHelperList"
+              @mouseleave="hideHelper"
+              :type="'list'"
+              @click="listClick">
+            </flatButton>
+            <flatButton
+              @mousemove="showHelperRandom"
+              @mouseleave="hideHelper"
+              :type="'random'"
+              @click="randomClick">
+            </flatButton>
+            <flatButton
+              @mousemove="showHelperLoop"
+              @mouseleave="hideHelper"
+              :type="'loop'"
+              @click="loopClick">
+            </flatButton>
+          </div>
+
         </div>
 
+      </div>
+
+      <div class="app__frameworks">
+        <div class="app__framework-vue"></div>
+        <div class="app__framework-electron"></div>
       </div>
 
     </div>
@@ -94,16 +103,15 @@ import helper from "./components/Helper";
 import moveLine from "./components/MoveLine";
 import flatButton from "./components/FlatButton";
 import trackList from "./components/TrackList";
-import {eventEmitter} from "./main";
+import { eventEmitter } from "./main";
 
 export default {
-
   components: {
     equalizer,
     helper,
     moveLine,
     flatButton,
-    trackList,
+    trackList
   },
 
   data() {
@@ -114,12 +122,11 @@ export default {
       speed: 100,
       helperListText: "Скрыть список треков",
       helperRandomText: "Включить случайное воспроизведение",
-      helperLoopText: "Включить повтор трека",
+      helperLoopText: "Включить повтор трека"
     };
   },
 
   methods: {
-
     showHelper(text) {
       eventEmitter.$emit("show-helper", text);
     },
@@ -145,74 +152,70 @@ export default {
     },
 
     nextClick() {
-      eventEmitter.$emit('track-list-next');
+      eventEmitter.$emit("track-list-next");
     },
 
     prevClick() {
-      eventEmitter.$emit('track-list-prev');
+      eventEmitter.$emit("track-list-prev");
     },
 
     playClick() {
-      eventEmitter.$emit('play-equalizer');
+      eventEmitter.$emit("play-equalizer");
       this.showPlay = false;
     },
 
     pauseClick() {
-      eventEmitter.$emit('pause-equalizer');
+      eventEmitter.$emit("pause-equalizer");
       this.showPlay = true;
     },
 
     loopClick() {
       if (this.loopClick.f) {
-        this.helperLoopText = 'Включить повтор трека';
+        this.helperLoopText = "Включить повтор трека";
       } else {
-        this.helperLoopText = 'Отключить повтор трека';
+        this.helperLoopText = "Отключить повтор трека";
       }
       this.showHelperLoop();
       this.loopClick.f = !this.loopClick.f;
-      eventEmitter.$emit('track-list-toggleLoopCurrent');
+      eventEmitter.$emit("track-list-toggleLoopCurrent");
     },
 
     randomClick() {
       if (this.randomClick.f) {
-        this.helperRandomText = 'Включить случайное воспроизведение';
+        this.helperRandomText = "Включить случайное воспроизведение";
       } else {
-        this.helperRandomText = 'Отключить случайное воспроизведение';
+        this.helperRandomText = "Отключить случайное воспроизведение";
       }
       this.showHelperRandom();
       this.randomClick.f = !this.randomClick.f;
-      eventEmitter.$emit('track-list-toggleRandomNext');
+      eventEmitter.$emit("track-list-toggleRandomNext");
     },
 
     listClick() {
       if (this.listClick.f) {
-        this.helperListText = 'Скрыть список треков';
+        this.helperListText = "Скрыть список треков";
       } else {
-        this.helperListText = 'Показать список треков';
+        this.helperListText = "Показать список треков";
       }
       this.showHelperList();
       this.listClick.f = !this.listClick.f;
-      eventEmitter.$emit('track-list-toggleVisibility');
-    },
-
+      eventEmitter.$emit("track-list-toggleVisibility");
+    }
   },
 
   mounted() {
-
     // Обработка нажатий клавиш
-    window.addEventListener("keypress", (e) => {
+    window.addEventListener("keypress", e => {
       //TODO: keypress
       // if (e.key.toLowerCase() === "delete") {
       //   eventEmitter.$emit("track-list-deleteSelected");
       // }
     });
 
-    window.addEventListener("resize", (e) => {
+    window.addEventListener("resize", e => {
       eventEmitter.$emit("move-line-resize");
     });
-
-  },
-
+  }
 };
 </script>
 
@@ -232,25 +235,75 @@ $margin-right: 10px;
   overflow: hidden;
   user-select: none;
   cursor: pointer;
-  background-color: $color-main-back;
+
+  &__frameworks {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__framework-vue,
+  &__framework-electron {
+    opacity: 0.3;
+    transition-duration: $animation-duration;
+    transition-timing-function: $animation-timing-function;
+    transition-property: opacity;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__framework-vue {
+    width: 100px;
+    height: 100px;
+    background-image: url("./img/vue.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  &__framework-electron {
+    margin-bottom: 10px;
+    width: 200px;
+    height: 30px;
+    background-image: url("./img/electron.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
 
   &__left {
-    padding: $left-padding-v $left-padding-h;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
     width: 40%;
     min-width: 400px;
+    background-color: darken($color-main-back, 2);
   }
 
   &__right {
     width: 60%;
   }
 
+  &__inputs {
+    padding: $left-padding-v $left-padding-h;
+    background-color: $color-main-back;
+  }
+
   &__top {
+    height: 370px;
     position: relative;
     margin-bottom: $left-padding-v;
 
+    .equalizer {
+      height: 350px;
+    }
+
     .helper {
       position: absolute;
-      bottom: 20px + $margin-right;
+      bottom: 15px + $margin-right;
       right: $margin-right;
     }
   }
