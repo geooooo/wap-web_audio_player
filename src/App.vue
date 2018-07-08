@@ -1,36 +1,26 @@
 <template>
 <div class="app">
 
-    <equalizer>
+    <equalizer style="height: 300px">
     </equalizer>
 
-    <button @click="play">play</button>
-    <button @click="pause">pause</button>
-    <button @click="stop">stop</button>
+    <!-- <button @click="play">play</button>
+    <button @click="pause">pause</button> -->
+    <!-- <button @click="stop">stop</button> -->
 
-    <helper></helper>
+    <!-- <helper></helper>
 
     <input v-model="helperText" type="text">
     <button @click="showHelper">show helper</button>
-    <button @click="hideHelper">hide helper</button>
+    <button @click="hideHelper">hide helper</button> -->
 
-    <move-line
+    <!-- <move-line
       :height="20"
       :topRound="false"
       :maxValue="100"
-      v-model="moveLine1Value"></move-line>
-    <p style="color:white">{{ moveLine1Value }}</p>
-    <button @click="()=>this.moveLine1Value = 0">=> 0</button>
-
-    <div style="padding-left: 400px">
-    <move-line
-      :height="40"
-      :topRound="true"
-      :maxValue="5"
-      v-model="moveLine2Value"></move-line>
-      <p style="color:white">{{ moveLine2Value }}</p>
-      <button @click="()=>this.moveLine2Value = 0">=> 0</button>
-    </div>
+      v-model="moveLine1Value"></move-line> -->
+    <!-- <p>{{ moveLine1Value }}</p> -->
+    <!-- <button @click="()=>this.moveLine1Value = 0">=> 0</button> -->
 
     <flatButton
       :type="'prev'"
@@ -67,8 +57,11 @@
       @click="loopClick">
     </flatButton>
 
+    <track-list
+      @selectplay="trackSelectPlay"></track-list>
+
 </div>
-</template>prev
+</template>
 
 
 <script>
@@ -76,6 +69,7 @@ import equalizer from "./components/Equalizer";
 import helper from "./components/Helper";
 import moveLine from "./components/MoveLine";
 import flatButton from "./components/FlatButton";
+import trackList from "./components/TrackList";
 import {eventEmitter} from "./main";
 
 export default {
@@ -85,6 +79,7 @@ export default {
     helper,
     moveLine,
     flatButton,
+    trackList,
   },
 
   data() {
@@ -97,18 +92,6 @@ export default {
 
   methods: {
 
-    play() {
-      eventEmitter.$emit('play-equalizer');
-    },
-
-    pause() {
-      eventEmitter.$emit('pause-equalizer');
-    },
-
-    stop() {
-      eventEmitter.$emit('stop-equalizer');
-    },
-
     showHelper() {
       eventEmitter.$emit("show-helper", this.helperText);
     },
@@ -117,35 +100,47 @@ export default {
       eventEmitter.$emit("hide-helper");
     },
 
+    trackSelectPlay(track) {
+      console.log(track);
+    },
+
     nextClick() {
-      console.log("+");
+      eventEmitter.$emit('track-list-next');
     },
 
     prevClick() {
-      console.log("+");
+      eventEmitter.$emit('track-list-prev');
     },
 
     playClick() {
-      console.log("+");
+      eventEmitter.$emit('play-equalizer');
     },
 
     pauseClick() {
-      console.log("+");
+      eventEmitter.$emit('pause-equalizer');
     },
 
     loopClick() {
-      console.log("+");
+      eventEmitter.$emit('track-list-toggleLoopCurrent');
     },
 
     randomClick() {
-      console.log("+");
+      eventEmitter.$emit('track-list-toggleRandomNext');
     },
 
     listClick() {
-      console.log("+");
+      eventEmitter.$emit('track-list-toggleVisibility');
     },
 
   },
+
+  mounted() {
+    window.addEventListener("keypress", (e) => {
+      if (e.key.toLowerCase() === "delete") {
+        eventEmitter.$emit("track-list-deleteSelected");
+      }
+    });
+  }
 
 };
 </script>
@@ -155,8 +150,10 @@ export default {
 @import "base.scss";
 
 .app {
+  overflow: hidden;
+  user-select: none;
   cursor: pointer;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: $color-main-back;
 }
 </style>

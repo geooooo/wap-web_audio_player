@@ -113,7 +113,7 @@ export default {
     width: 100%;
     border-bottom-left-radius: $border-radius + 1px;
     border-bottom-right-radius: $border-radius + 1px;
-    background-color: $color-main-front;
+    background-color: darken($color-main-front, 1);
 
     &_top-rounded {
         border-top-left-radius: $border-radius + 1px;

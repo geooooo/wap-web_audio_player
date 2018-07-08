@@ -1,74 +1,20 @@
 <template>
-<div>
-
-<svg
+<div
     ref="equalizer"
-    class="equalizer"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    viewbox="0 0 300 200"
-    width="300"
-    height="200">
+    class="equalizer">
 
-  <defs>
-    <clippath id="_clipPath_CQiDeDt5LjfNisHjOtz6tBVC5dDS3vKo">
-      <rect width="300" height="200"></rect>
-    </clippath>
-  </defs>
-
-  <g clip-path="url(#_clipPath_CQiDeDt5LjfNisHjOtz6tBVC5dDS3vKo)">
-
-    <rect
-        x="0" y="0"
-        width="300" height="200"></rect>
-
-    <g style="isolation:isolate;">
-
-      <rect
-        class="equalizer__level"
-        x="208"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="194"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="180"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="166"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="152"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="138"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="124"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="110"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="96"></rect>
-
-      <rect
-        class="equalizer__level"
-        x="82"></rect>
-
-    </g>
-
-  </g>
-
-</svg>
+    <div class="equalizer__container">
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+        <div class="equalizer__level"></div>
+    </div>
 
 </div>
 </template>
@@ -146,15 +92,38 @@ export default {
 @import "../base.scss";
 
 .equalizer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    min-width: 300px;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
-    fill: $color-main-front;
+    background-color: $color-main-front;
+
+    &__container {
+        display: flex;
+        justify-content: center;
+        height: 30%;
+        width: 50%;
+        min-height: 200px;
+        min-width: 300px;
+        transform: rotateZ(180deg);
+    }
 
     &__level {
-        width: 10px;
-        fill: $color-element-1-inactive;
+        margin-right: 10px;
+        height: 0;
+        width: 20px;
+        background-color: $color-element-1-inactive;
         animation-direction: alternate;
         animation-iteration-count: 0;
+
+        &:last-child {
+            margin-right: 0;
+        }
 
         // Для каждой полоски задаётся случайная высота,
         // анимация со случайной скоростью
@@ -177,12 +146,10 @@ export default {
 
             @keyframes level-move-#{$i} {
                 from {
-                    y: 143px;
                     height: 0;
                 }
                 to {
-                    y: (143 - $max-height) + px;
-                    height: $max-height + px;
+                    height: $max-height + %;
                 }
             }
 

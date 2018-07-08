@@ -1,7 +1,6 @@
 <template>
-<div>
 
-  <div v-if="type === 'next'" @click="click" class="flat-button flat-button_next">
+  <button v-if="type === 'next'" @click="click" class="flat-button flat-button_next">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -20,9 +19,9 @@
         stroke-linecap="square"
         stroke-miterlimit="3"/>
     </svg>
-  </div>
+  </button>
 
-  <div v-else-if="type === 'prev'" @click="click" class="flat-button flat-button_prev">
+  <button v-else-if="type === 'prev'" @click="click" class="flat-button flat-button_prev">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -38,9 +37,9 @@
         stroke-linecap="square"
         stroke-miterlimit="3"/>
     </svg>
-  </div>
+  </button>
 
-  <div v-else-if="type === 'play'" @click="click" class="flat-button flat-button_circle">
+  <button v-else-if="type === 'play'" @click="click" class="flat-button flat-button_circle">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -57,9 +56,9 @@
             287.171 157.704 286.47 157.704
             284.925 Z "/>
     </svg>
-  </div>
+  </button>
 
-  <div v-else-if="type === 'pause'" @click="click" class="flat-button flat-button_circle">
+  <button v-else-if="type === 'pause'" @click="click" class="flat-button flat-button_circle">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -83,9 +82,9 @@
             265.424 C 169.5 263.769 170.62
             262.424 172 262.424 Z "/>
     </svg>
-  </div>
+  </button>
 
-  <div v-else-if="type === 'list'" @click="click" class="flat-button flat-button_rect">
+  <button v-else-if="type === 'list'" @click="click" class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -106,12 +105,11 @@
             279.172 302 280 C 302 280.828 301.328
             281.5 300.5 281.5 C 299.672 281.5 299
             280.828 299 280 Z  M 304 270 L 317 270
-            M 304 280 L 317 280 M 304 275 L 317 275"
-        /></svg>
+            M 304 280 L 317 280 M 304 275 L 317 275"/>
+    </svg>
+  </button>
 
-  </div>
-
-  <div v-else-if="type === 'random'" @click="click" class="flat-button flat-button_rect">
+  <button v-else-if="type === 'random'" @click="click" class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -130,9 +128,9 @@
         stroke-linecap="square"
         stroke-miterlimit="3"/>
     </svg>
-  </div>
+  </button>
 
-  <div v-else-if="type === 'loop'" @click="click" class="flat-button flat-button_rect">
+  <button v-else-if="type === 'loop'" @click="click" class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -149,9 +147,8 @@
           stroke-linecap="butt"
           stroke-miterlimit="3"/>
     </svg>
-  </div>
+  </button>
 
-</div>
 </template>
 
 
@@ -186,14 +183,15 @@ export default {
 @import "../base.scss";
 
 .flat-button {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   border: 2px solid $color-element-1-inactive;
   background-color: $color-main-front;
   transition-duration: $animation-duration;
   transition-timing-function: $animation-timing-function;
-  transition-property: border-color;
+  transition-property: border-color, background-color;
+  cursor: pointer;
 
   &:hover {
     border-color: $color-element-1-active;
@@ -201,7 +199,8 @@ export default {
   }
 
   &:active {
-    border-color: $color-main-front;
+    border-color: $color-main-back;
+    background-color: $color-main-back;
   }
 
   &_circle {
@@ -223,28 +222,28 @@ export default {
   }
 
   &_next {
-    width: 26px;
-    height: 32px;
+    width: 30px;
+    height: 36px;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
   }
 
   &_prev {
-    width: 26px;
-    height: 32px;
+    width: 30px;
+    height: 36px;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
   }
 
   &_rect {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: $border-radius;
   }
 
   &__pic {
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     fill: none;
     stroke: $color-element-1-inactive;
     stroke-width: 2px;
