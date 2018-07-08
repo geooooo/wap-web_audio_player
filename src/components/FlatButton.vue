@@ -84,7 +84,12 @@
     </svg>
   </button>
 
-  <button v-else-if="type === 'list'" @click="click" class="flat-button flat-button_rect">
+  <button
+    v-else-if="type === 'list'"
+    @click="click"
+    @mousemove="mousemove"
+    @mouseleave="mouseleave"
+    class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +114,12 @@
     </svg>
   </button>
 
-  <button v-else-if="type === 'random'" @click="click" class="flat-button flat-button_rect">
+  <button
+    v-else-if="type === 'random'"
+    @click="click"
+    @mousemove="mousemove"
+    @mouseleave="mouseleave"
+    class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +140,12 @@
     </svg>
   </button>
 
-  <button v-else-if="type === 'loop'" @click="click" class="flat-button flat-button_rect">
+  <button
+    v-else-if="type === 'loop'"
+    @click="click"
+    @mousemove="mousemove"
+    @mouseleave="mouseleave"
+    class="flat-button flat-button_rect">
     <svg
       class="flat-button__pic"
       xmlns="http://www.w3.org/2000/svg"
@@ -169,9 +184,26 @@ export default {
   },
 
   methods: {
-    click() {
+
+    click(e) {
+      let target = e.target;
+      while (target.nodeName.toLowerCase() != "button") {
+        target = target.parentNode;
+      }
+      if (target.classList.contains("flat-button_rect")) {
+        target.classList.toggle("flat-button_down");
+      }
       this.$emit("click");
-    }
+    },
+
+    mousemove() {
+      this.$emit("mousemove");
+    },
+
+    mouseleave() {
+      this.$emit("mouseleave");
+    },
+
   },
 
 };
@@ -222,15 +254,15 @@ export default {
   }
 
   &_next {
-    width: 30px;
-    height: 36px;
+    width: 26px;
+    height: 30px;
     border-top-right-radius: 30px;
     border-bottom-right-radius: 30px;
   }
 
   &_prev {
-    width: 30px;
-    height: 36px;
+    width: 26px;
+    height: 30px;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
   }
@@ -239,6 +271,11 @@ export default {
     width: 30px;
     height: 30px;
     border-radius: $border-radius;
+  }
+
+  &_down {
+    border-color: $color-main-back;
+    background-color: $color-main-back;
   }
 
   &__pic {

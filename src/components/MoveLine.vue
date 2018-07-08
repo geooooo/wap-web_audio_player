@@ -3,6 +3,7 @@
     ref="moveLine"
     class="move-line"
     @mousemove="moveLineMouseMove"
+    @mouseleave="mouseleave"
     @click="moveLineClick">
 
     <div
@@ -14,93 +15,106 @@
 
 
 <script>
-import {eventEmitter} from "../main";
+import { eventEmitter } from "../main";
 
 export default {
-
   props: {
+    // v-model
+    value: {
+      type: Number,
+      required: true
+    },
 
-      // v-model
-      value: {
-          type: Number,
-          required: true
-      },
+    // Высота компонента
+    height: {
+      type: Number,
+      required: true
+    },
 
-      // Высота компонента
-      height: {
-          type: Number,
-          required: true
-      },
+    // Округлость верхней границы
+    topRound: {
+      type: Boolean,
+      default: true
+    },
 
-      // Округлость верхней границы
-      topRound: {
-          type: Boolean,
-          required: true
-      },
-
-      // Максимальое значение связанное с размером полосы
-      maxValue: {
-          type: Number,
-          required: true
-      },
-
+    // Максимальое значение связанное с размером полосы
+    maxValue: {
+      type: Number,
+      required: true
+    }
   },
 
   data() {
-    return {};
+    return {
+      clientWidth: 0,
+      offsetX: 0
+    };
   },
 
   methods: {
+    moveLineMouseMove(e) {
+      // Если нажата левая кнопка мыши
+      if (e.buttons == 1) {
+        this.setValue(this.moveBar(e.offsetX));
+      }
+      this.$emit("mousemove");
+    },
 
-      moveLineMouseMove(e) {
-        // Если нажата левая кнопка мыши
-        if (e.buttons == 1) {
-            this.moveBar(e.offsetX);
-        }
-      },
+    moveLineClick(e) {
+      this.offsetX = e.offsetX;
+      this.setValue(this.moveBar(e.offsetX));
+    },
 
-      moveLineClick(e) {
-        this.moveBar(e.offsetX);
-      },
+    mouseleave() {
+      this.$emit("mouseleave");
+    },
 
-      moveBar(x) {
-        // Погрешность при движении полосы
-        const delta = 5;
+    moveBar(x) {
+      // Погрешность при движении полосы
+      const delta = 5;
+      const clientWidth = this.$refs.moveLine.clientWidth;
+      this.clientWidth = clientWidth;
+      if (x < delta) {
+        x = 0;
+      } else if (clientWidth - x < delta) {
+        x = clientWidth;
+      }
+      this.$refs.bar.style.width = x + "px";
+      return x;
+    },
+
+    setValue(x) {
+      const clientWidth = this.$refs.moveLine.clientWidth;
+      let value = this.maxValue / clientWidth * x;
+      value = value <= this.maxValue / 2 ? Math.ceil(value) : Math.floor(value);
+      this.$emit("input", value);
+    },
+
+    resize() {
         const clientWidth = this.$refs.moveLine.clientWidth;
-        if (x < delta) {
-            x = 0;
-        } else if (clientWidth - x < delta) {
-            x = clientWidth
-        }
-        this.$refs.bar.style.width = x + "px";
-        let value = this.maxValue / clientWidth * x;
-        value = (value <= this.maxValue / 2)?
-            Math.ceil(value) :
-            Math.floor(value);
-        this.$emit("input", value);
-      },
-
+        this.moveBar(clientWidth / 100 * this.value);
+    },
   },
 
   watch: {
-
-      value(newValue) {
-          if (newValue === 0) {
-              this.moveBar(0);
-          }
-      },
-
+    value(newValue) {
+      if (newValue === 0) {
+        this.moveBar(0);
+      }
+    }
   },
 
   mounted() {
-      eventEmitter.$on("move-line-move")
+    eventEmitter.$on("move-line-move");
+    if (!this.topRound) {
+        eventEmitter.$on("move-line-resize", this.resize);
+    }
 
-      this.$refs.moveLine.style.height = this.height + "px";
-      if (this.topRound) {
-          this.$refs.moveLine.classList.add("move-line_top-rounded");
-      }
-  },
-
+    this.$refs.moveLine.style.height = this.height + "px";
+    if (this.topRound) {
+      this.$refs.moveLine.classList.add("move-line_top-rounded");
+    }
+  }
 };
 </script>
 
@@ -110,31 +124,30 @@ export default {
 @import "../base.scss";
 
 .move-line {
-    width: 100%;
-    border-bottom-left-radius: $border-radius + 1px;
-    border-bottom-right-radius: $border-radius + 1px;
-    background-color: darken($color-main-front, 1);
+  width: 100%;
+  border-bottom-left-radius: $border-radius + 1px;
+  border-bottom-right-radius: $border-radius + 1px;
+  background-color: darken($color-main-front, 1);
 
-    &_top-rounded {
-        border-top-left-radius: $border-radius + 1px;
-        border-top-right-radius: $border-radius + 1px;
-    }
+  &_top-rounded {
+    border-top-left-radius: $border-radius + 1px;
+    border-top-right-radius: $border-radius + 1px;
+  }
 
-    &__bar {
-        width: 0;
-        height: 100%;
-        border-radius: $border-radius;
-        background-color: $color-element-1-inactive;
-        transition-duration: $animation-duration;
-        transition-timing-function: $animation-timing-function;
-        transition-property: background-color;
-    }
+  &__bar {
+    width: 0;
+    height: 100%;
+    border-radius: $border-radius;
+    background-color: $color-element-1-inactive;
+    transition-duration: $animation-duration;
+    transition-timing-function: $animation-timing-function;
+    transition-property: background-color;
+  }
 
-    &:hover &__bar,
-    &:active &__bar{
-        background-color: $color-element-1-active;
-        box-shadow: $box-shadow;
-    }
+  &:hover &__bar,
+  &:active &__bar {
+    background-color: $color-element-1-active;
+    box-shadow: $box-shadow;
+  }
 }
-
 </style>

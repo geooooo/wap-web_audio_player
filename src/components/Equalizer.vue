@@ -97,7 +97,7 @@ export default {
     align-items: center;
     width: 100%;
     height: 100%;
-    min-height: 300px;
+    min-height: 200px;
     min-width: 300px;
     border-top-left-radius: $border-radius;
     border-top-right-radius: $border-radius;
@@ -108,7 +108,7 @@ export default {
         justify-content: center;
         height: 30%;
         width: 50%;
-        min-height: 200px;
+        min-height: 300px;
         min-width: 300px;
         transform: rotateZ(180deg);
     }
