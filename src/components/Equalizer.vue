@@ -4,16 +4,10 @@
     class="equalizer">
 
     <div class="equalizer__container">
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
-        <div class="equalizer__level"></div>
+        <div
+            v-for="i in 10"
+            :key="i"
+            class="equalizer__level"></div>
     </div>
 
 </div>

@@ -73,6 +73,7 @@ export default {
       if (this.tracks.length === 0) {
           // Показ текста при пустом списке
           this.$refs.emptyText.style.display = "";
+          this.$refs.emptyText.classList.remove("track-list__empty-text_strong");
           this.$refs.trackList.classList.add("track-list_c");
       }
     },
@@ -104,10 +105,10 @@ export default {
             if (this.isRandomNext) {
                 id = Math.floor(Math.random() * this.tracks.length);
             } else {
-                if (id == this.tracks.length - 1) {
+                if (this.playedTrack.id == this.tracks.length - 1) {
                     id = 0;
                 } else {
-                    id++;
+                    id = this.playedTrack.id + 1;
                 }
             }
             this.setPlayed(id);
@@ -195,7 +196,10 @@ export default {
     trackClick(e, track, id) {
       if (e.ctrlKey) {
         // Выделение трека как выбранного
-        if (track.played) return;
+        if (track.played) {
+          this.clearPlayed();
+          eventEmitter.$emit("stop-equalizer");
+        }
         track.selected = !track.selected;
         if (track.selected) {
           this.selectedTracks.push(track);
@@ -217,6 +221,7 @@ export default {
 
     // Убрать выделение с проигрываемого трека
     clearPlayed() {
+      this.$emit("clearplay");
       this.playedTrack.track.played = false;
       this.playedTrack = {
           track: null,
@@ -226,7 +231,10 @@ export default {
 
     // Задать проигрываемый трек
     setPlayed(id) {
+      this.clearAllSelected();
+      this.playedTrack.track.played = false;
       this.playedTrack.track = this.tracks[id];
+      this.playedTrack.track.played = true;
       this.playedTrack.id = id;
     },
 

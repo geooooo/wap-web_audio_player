@@ -92,7 +92,7 @@ export default {
 
     resize() {
         const clientWidth = this.$refs.moveLine.clientWidth;
-        this.moveBar(clientWidth / 100 * this.value);
+        this.moveBar(clientWidth / this.maxValue * this.value);
     },
   },
 
@@ -114,6 +114,8 @@ export default {
     if (this.topRound) {
       this.$refs.moveLine.classList.add("move-line_top-rounded");
     }
+
+    this.moveBar(this.$refs.moveLine.clientWidth / this.maxValue * this.value);
   }
 };
 </script>

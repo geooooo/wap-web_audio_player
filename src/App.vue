@@ -1,5 +1,10 @@
 <template>
-<div class="app">
+<div
+  @drop.prevent.stop
+  @drag.prevent.stop
+  @dragover.prevent.stop
+  @dragenter.prevent.stop
+  class="app">
 
     <div class="app__left">
 
@@ -10,7 +15,7 @@
           <helper></helper>
           <move-line
             v-model="time"
-            @mousemove="showHelper('TODO: время')"
+            @mousemove="showHelper('TODO: время, особое поведение, если нечего проигрывать')"
             @mouseleave="hideHelper"
             :height="20"
             :topRound="false"
@@ -59,18 +64,21 @@
 
         <div class="app__container app__container_r">
             <flatButton
+              ref="listButton"
               @mousemove="showHelperList"
               @mouseleave="hideHelper"
               :type="'list'"
               @click="listClick">
             </flatButton>
             <flatButton
+              ref="randomButton"
               @mousemove="showHelperRandom"
               @mouseleave="hideHelper"
               :type="'random'"
               @click="randomClick">
             </flatButton>
             <flatButton
+              ref="loopButton"
               @mousemove="showHelperLoop"
               @mouseleave="hideHelper"
               :type="'loop'"
@@ -90,7 +98,9 @@
     </div>
 
     <div class="app__right">
-      <track-list></track-list>
+      <track-list
+        @selectplay="trackSelectPlay"
+        @clearplay="clearPlayed"></track-list>
     </div>
 
 </div>
@@ -116,9 +126,11 @@ export default {
 
   data() {
     return {
+      havePlay: false,
+      hideDelay: 500,
       showPlay: true,
       time: 0,
-      volume: 50,
+      volume: 100,
       speed: 100,
       helperListText: "Скрыть список треков",
       helperRandomText: "Включить случайное воспроизведение",
@@ -127,6 +139,12 @@ export default {
   },
 
   methods: {
+
+    clearPlayed() {
+      this.havePlay = false;
+      this.pauseClick();
+    },
+
     showHelper(text) {
       eventEmitter.$emit("show-helper", text);
     },
@@ -143,23 +161,33 @@ export default {
       this.showHelper(this.helperLoopText);
     },
 
-    hideHelper() {
-      eventEmitter.$emit("hide-helper");
+    hideHelper(flagDuration) {
+      if (flagDuration) {
+        window.setTimeout((self) => {
+          self.hideHelper();
+        }, this.hideDelay, this);
+      } else {
+        eventEmitter.$emit("hide-helper");
+      }
     },
 
     trackSelectPlay(track) {
-      console.log(track);
+      this.havePlay = true;
+      this.playClick();
     },
 
     nextClick() {
+      if (!this.havePlay) return;
       eventEmitter.$emit("track-list-next");
     },
 
     prevClick() {
+      if (!this.havePlay) return;
       eventEmitter.$emit("track-list-prev");
     },
 
     playClick() {
+      if (!this.havePlay) return;
       eventEmitter.$emit("play-equalizer");
       this.showPlay = false;
     },
@@ -204,12 +232,83 @@ export default {
   },
 
   mounted() {
+    let self = this;
     // Обработка нажатий клавиш
-    window.addEventListener("keypress", e => {
-      //TODO: keypress
-      // if (e.key.toLowerCase() === "delete") {
-      //   eventEmitter.$emit("track-list-deleteSelected");
-      // }
+    window.addEventListener("keydown", e => {
+      let key = e.key.toLowerCase();
+      switch (key) {
+        case "delete":
+          eventEmitter.$emit("track-list-deleteSelected");
+          break;
+        case "arrowup":
+          self.prevClick();
+          break;
+        case "arrowdown":
+          self.nextClick();
+          break;
+        case "arrowright":
+          self.nextClick();
+          break;
+        case "arrowleft":
+          self.prevClick();
+          break;
+        case " ":
+        case "p":
+          if (self.showPlay) {
+            self.playClick();
+          } else {
+            self.pauseClick();
+          }
+          break;
+        case "enter":
+          self.$refs.listButton.click({
+            target: self.$refs.listButton.$el
+          });
+          if (self.listClick.f) {
+            self.showHelper("Скрыть список треков");
+          } else {
+            self.showHelper("Показать список треков");
+          }
+          self.hideHelper(true);
+          break;
+        case "l":
+          self.$refs.loopButton.click({
+            target: self.$refs.loopButton.$el
+          });
+          if (self.loopClick.f) {
+            self.showHelper("Включить повтор трека");
+          } else {
+            self.showHelper("Отключить повтор трека");
+          }
+          self.hideHelper(true);
+          break;
+        case "r":
+          self.$refs.randomButton.click({
+            target: self.$refs.randomButton.$el
+          });
+          if (self.randomClick.f) {
+            self.showHelper("Включить случайное воспроизведение");
+          } else {
+            self.showHelper("Отключить случайное воспроизведение");
+          }
+          self.hideHelper(true);
+          break;
+        // TODO: регулирование громкости и скорости с клавиатуры
+        case "+":
+          if (e.altKey) {
+            ;
+          } else {
+            ;
+          }
+          break;
+        case "-":
+          if (e.altKey) {
+            ;
+          } else {
+            ;
+          }
+          break;
+      }
     });
 
     window.addEventListener("resize", e => {
