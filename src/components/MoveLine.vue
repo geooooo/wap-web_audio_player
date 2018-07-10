@@ -98,9 +98,7 @@ export default {
 
   watch: {
     value(newValue) {
-      if (newValue === 0) {
-        this.moveBar(0);
-      }
+      this.resize();
     }
   },
 

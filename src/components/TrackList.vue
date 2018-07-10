@@ -6,15 +6,23 @@
     @dragover.prevent.stop
     @dragleave.stop.self.prevent="dragleave"
     @dragenter="dragenter"
+    @mousemove="mousemove"
+    @mouseleave="mouseleave"
+    @wheel="wheel"
     class="track-list track-list_c">
 
-    <div class="light"></div>
+    <div
+      ref="lightTop"
+      class="light light_top"></div>
 
     <div ref="emptyText" class="track-list__empty-text">
         Перетащите сюда свои треки
     </div>
 
-    <div class="track-list__container">
+    <div
+      ref="container"
+      class="track-list__container"
+      style="margin-top: 0">
 
         <ttrack
             v-for="(track, id) in tracks"
@@ -28,7 +36,9 @@
 
     </div>
 
-    <div class="light"></div>
+    <div
+      ref="lightBottom"
+      class="light light_bottom"></div>
 
 </div>
 </template>
@@ -58,6 +68,80 @@ export default {
 
   methods: {
 
+    // Проверка возможности прокрутки вверх
+    isCanScrollTop() {
+      return (this.tracks.length != 0) &&
+             (parseInt(this.$refs.container.style.marginTop) != 0);
+    },
+
+    // Проверка возможности прокрутки вниз
+    isCanScrollBottom() {
+      return (this.$refs.trackList.scrollHeight - this.$refs.trackList.clientHeight) > 0;
+    },
+
+    mousemove() {
+      if (this.isCanScrollTop()) {
+        this.$refs.lightTop.classList.add('light_actived');
+      } else {
+        this.$refs.lightTop.classList.remove('light_actived');
+        this.$refs.lightTop.classList.remove('light_far');
+      }
+      if (this.isCanScrollBottom()) {
+        this.$refs.lightBottom.classList.add('light_actived');
+      } else {
+        this.$refs.lightBottom.classList.remove('light_actived');
+        this.$refs.lightBottom.classList.remove('light_far');
+      }
+    },
+
+    mouseleave() {
+      this.$refs.lightTop.classList.remove('light_actived');
+      this.$refs.lightTop.classList.remove('light_far');
+      this.$refs.lightBottom.classList.remove('light_actived');
+      this.$refs.lightBottom.classList.remove('light_far');
+    },
+
+    wheel(e) {
+      // Скорость прокрутки
+      let delta = 10;
+      if (this.tracks.length === 0) return;
+      let marginTop = parseInt(this.$refs.container.style.marginTop);
+      if (e.deltaY > 0) {
+        // вниз
+        this.$refs.lightBottom.classList.add('light_far');
+        this.$refs.lightTop.classList.remove('light_far');
+        let diff = this.$refs.trackList.scrollHeight - this.$refs.trackList.clientHeight;
+        if (diff < 0) {
+          // "докрутка" до конца
+          this.$refs.container.style.marginTop = `${diff}px`;
+        } else if (diff > 0) {
+          this.$refs.container.style.marginTop = `${marginTop - delta}px`;
+        }
+      } else if (marginTop != 0) {
+        // вверх
+        this.$refs.lightTop.classList.add('light_far');
+        this.$refs.lightBottom.classList.remove('light_far');
+        if (marginTop + delta > 0) {
+          this.$refs.container.style.marginTop = 0;
+        } else {
+          this.$refs.container.style.marginTop = `${marginTop + delta}px`;
+        }
+      }
+      // Подстветка прокрутки
+      if (this.isCanScrollTop()) {
+        this.$refs.lightTop.classList.add('light_actived');
+      } else {
+        this.$refs.lightTop.classList.remove('light_actived');
+        this.$refs.lightTop.classList.remove('light_far');
+      }
+      if (this.isCanScrollBottom()) {
+        this.$refs.lightBottom.classList.add('light_actived');
+      } else {
+        this.$refs.lightBottom.classList.remove('light_actived');
+        this.$refs.lightBottom.classList.remove('light_far');
+      }
+    },
+
     dragleave() {
       this.$refs.emptyText.classList.remove("track-list__empty-text_strong");
     },
@@ -71,10 +155,10 @@ export default {
       this.tracks = this.tracks.filter(track => !track.selected);
       this.selectedTracks = [];
       if (this.tracks.length === 0) {
-          // Показ текста при пустом списке
-          this.$refs.emptyText.style.display = "";
-          this.$refs.emptyText.classList.remove("track-list__empty-text_strong");
-          this.$refs.trackList.classList.add("track-list_c");
+        // Показ текста при пустом списке
+        this.$refs.emptyText.style.display = "";
+        this.$refs.emptyText.classList.remove("track-list__empty-text_strong");
+        this.$refs.trackList.classList.add("track-list_c");
       }
     },
 
@@ -236,6 +320,11 @@ export default {
       this.playedTrack.track = this.tracks[id];
       this.playedTrack.track.played = true;
       this.playedTrack.id = id;
+
+      let clientHeight = this.$refs.trackList.clientHeight;
+      let trackSize = 36;
+      let offsetTop = trackSize * id + trackSize;
+      this.$refs.container.style.marginTop = `-${Math.trunc(offsetTop / clientHeight) * clientHeight}px`;
     },
 
     // Переключатель случайного воспроизведения
@@ -252,6 +341,7 @@ export default {
     toggleVisibility() {
         console.log("toggleVisibility");
     },
+
   },
 
   mounted() {
@@ -261,7 +351,13 @@ export default {
     eventEmitter.$on("track-list-prev", this.prev);
     eventEmitter.$on("track-list-next", this.next);
     eventEmitter.$on('track-list-toggleVisibility', this.toggleVisibility);
-  }
+  },
+
+  updated() {
+    if ((this.tracks.length !== 0) && this.playedTrack.track) {
+      this.playedTrack.id = this.tracks.indexOf(this.playedTrack.track);
+    }
+  },
 };
 </script>
 
@@ -271,6 +367,7 @@ export default {
 @import "../base.scss";
 
 .track-list {
+  position: relative;
   height: 100%;
   min-width: 300px;
   background-color: $color-main-front;
@@ -312,12 +409,23 @@ export default {
 }
 
 .light {
+  position: absolute;
+  right: 0;
+  width: 100%;
   height: 4px;
-  background-color: $color-main-front;
+  background-color: transparent;
   animation-duration: $animation-duration;
   animation-timing-function: $animation-timing-function;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
+
+  &_top {
+    top: 0;
+  }
+
+  &_bottom {
+    bottom: 0;
+  }
 
   &_actived {
     animation-name: light-actived;
@@ -348,7 +456,7 @@ export default {
 
 @keyframes light-actived {
   from {
-    background-color: $color-main-front;
+    background-color: transparent;
   }
   to {
     background-color: $color-element-1-active;

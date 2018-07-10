@@ -1,5 +1,6 @@
 <template>
 <div
+  ref="app"
   @drop.prevent.stop
   @drag.prevent.stop
   @dragover.prevent.stop
@@ -15,7 +16,7 @@
           <helper></helper>
           <move-line
             v-model="time"
-            @mousemove="showHelper('TODO: время, особое поведение, если нечего проигрывать')"
+            @mousemove="showTime"
             @mouseleave="hideHelper"
             :height="20"
             :topRound="false"
@@ -26,13 +27,13 @@
 
           <div class="app__container app__container_v">
             <move-line
-              @mousemove="showHelper('TODO: громкость')"
+              @mousemove="showVolume"
               @mouseleave="hideHelper"
               v-model="volume"
               :height="10"
               :maxValue="100"></move-line>
             <move-line
-              @mousemove="showHelper('TODO: скорость')"
+              @mousemove="showSpeed"
               @mouseleave="hideHelper"
               v-model="speed"
               :height="10"
@@ -129,6 +130,8 @@ export default {
       havePlay: false,
       hideDelay: 500,
       showPlay: true,
+      trackTimeMax: 0,
+      trackTimeCurrent: 0,
       time: 0,
       volume: 100,
       speed: 100,
@@ -139,6 +142,38 @@ export default {
   },
 
   methods: {
+
+    // Перевод секунд в формат mm:ss
+    formatTime(seconds) {
+      seconds = Math.floor(seconds);
+      let mm = String(Math.floor(seconds / 60));
+      let ss = String(Math.floor(seconds % 60));
+      if (mm.length == 1) {
+        mm = "0" + mm;
+      }
+      if (ss.length == 1) {
+        ss = "0" + ss;
+      }
+      return `${mm}:${ss}`;
+    },
+
+    showTime() {
+      if (this.havePlay) {
+        let cur = this.formatTime(this.trackTimeCurrent);
+        let max = this.formatTime(this.trackTimeMax);
+        this.showHelper(`${cur} / ${max}`);
+      } else {
+        this.showHelper("Выберите трек");
+      }
+    },
+
+    showVolume() {
+      this.showHelper(`Громкость: ${this.volume}%`);
+    },
+
+    showSpeed() {
+      this.showHelper(`Скорость: ${this.speed}%`);
+    },
 
     clearPlayed() {
       this.havePlay = false;
@@ -225,10 +260,19 @@ export default {
       } else {
         this.helperListText = "Показать список треков";
       }
+      this.$refs.app.classList.toggle("app_compact");
       this.showHelperList();
       this.listClick.f = !this.listClick.f;
       eventEmitter.$emit("track-list-toggleVisibility");
     }
+  },
+
+  watch: {
+
+    trackTimeCurrent() {
+      this.time = Math.trunc(100 / 135 * this.trackTimeCurrent)
+    },
+
   },
 
   mounted() {
@@ -334,6 +378,35 @@ $margin-right: 10px;
   overflow: hidden;
   user-select: none;
   cursor: pointer;
+
+  &_compact {
+    .app__left {
+      min-height: 340px;
+      width: 100%;
+    }
+    .app__right {
+      display: none;
+    }
+    .app__inputs {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .app__top {
+      height: 100%;
+    }
+    .equalizer {
+      height: calc(100% - 40px) !important;
+    }
+    .helper {
+      bottom: 10% !important;
+      right: 2% !important;
+    }
+    .app__frameworks {
+      display: none;
+    }
+  }
 
   &__frameworks {
     display: flex;

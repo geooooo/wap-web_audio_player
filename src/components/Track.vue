@@ -70,7 +70,7 @@ export default {
           this.toggleState("played");
       },
 
-  }
+  },
 
 };
 </script>
