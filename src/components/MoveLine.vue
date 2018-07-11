@@ -63,6 +63,7 @@ export default {
     moveLineClick(e) {
       this.offsetX = e.offsetX;
       this.setValue(this.moveBar(e.offsetX));
+      this.$emit("click");
     },
 
     mouseleave() {

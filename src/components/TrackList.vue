@@ -339,7 +339,7 @@ export default {
 
     // Скрыть/показать список треков
     toggleVisibility() {
-        console.log("toggleVisibility");
+        ;
     },
 
   },

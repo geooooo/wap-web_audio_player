@@ -16,6 +16,7 @@
           <helper></helper>
           <move-line
             v-model="time"
+            @click="timeClick"
             @mousemove="showTime"
             @mouseleave="hideHelper"
             :height="20"
@@ -127,6 +128,8 @@ export default {
 
   data() {
     return {
+      changeTimeFlag: false,
+      audio: new Audio(),
       havePlay: false,
       hideDelay: 500,
       showPlay: true,
@@ -207,8 +210,12 @@ export default {
     },
 
     trackSelectPlay(track) {
-      this.havePlay = true;
-      this.playClick();
+      let self = this;
+      let fr = new FileReader();
+      fr.onload = file => {
+        self.audio.src = file.target.result;
+      };
+      fr.readAsDataURL(track.track.file);
     },
 
     nextClick() {
@@ -224,11 +231,13 @@ export default {
     playClick() {
       if (!this.havePlay) return;
       eventEmitter.$emit("play-equalizer");
+      this.audio.play();
       this.showPlay = false;
     },
 
     pauseClick() {
       eventEmitter.$emit("pause-equalizer");
+      this.audio.pause();
       this.showPlay = true;
     },
 
@@ -264,19 +273,29 @@ export default {
       this.showHelperList();
       this.listClick.f = !this.listClick.f;
       eventEmitter.$emit("track-list-toggleVisibility");
-    }
+    },
+
+    timeClick() {
+      if (!this.havePlay) return;
+      this.audio.currentTime = (this.trackTimeMax / 100 * this.time).toFixed(2);
+    },
   },
 
   watch: {
 
-    trackTimeCurrent() {
-      this.time = Math.trunc(100 / 135 * this.trackTimeCurrent)
+    volume() {
+      this.audio.volume = (this.volume / 100).toFixed(2);
+    },
+
+    speed() {
+      this.audio.playbackRate = (this.speed / 100).toFixed(2);
     },
 
   },
 
   mounted() {
     let self = this;
+    let delta = 5;
     // Обработка нажатий клавиш
     window.addEventListener("keydown", e => {
       let key = e.key.toLowerCase();
@@ -337,19 +356,42 @@ export default {
           }
           self.hideHelper(true);
           break;
-        // TODO: регулирование громкости и скорости с клавиатуры
         case "+":
           if (e.altKey) {
-            ;
+            if (self.speed <= 200 - delta) {
+              self.speed += delta;
+            } else {
+              self.speed = 200;
+            }
+            self.showSpeed();
+            self.hideHelper(true);
           } else {
-            ;
+            if (self.volume <= 100 - delta) {
+              self.volume += delta;
+            } else {
+              self.volume = 100;
+            }
+            self.showVolume();
+            self.hideHelper(true);
           }
           break;
         case "-":
           if (e.altKey) {
-            ;
+            if (self.speed >= 50 + delta) {
+              self.speed -= delta;
+            } else {
+              self.speed = 50;
+            }
+            self.showSpeed();
+            self.hideHelper(true);
           } else {
-            ;
+            if (self.volume >= delta) {
+              self.volume -= delta;
+            } else {
+              self.volume = 0;
+            }
+            self.showVolume();
+            self.hideHelper(true);
           }
           break;
       }
@@ -358,7 +400,36 @@ export default {
     window.addEventListener("resize", e => {
       eventEmitter.$emit("move-line-resize");
     });
-  }
+  },
+
+  created() {
+    let self = this;
+
+    this.audio.loop = false;
+    this.audio.muted = false;
+    this.audio.volume = this.volume / 100;
+
+    this.audio.addEventListener("loadedmetadata", (e) => {
+      self.trackTimeCurrent = 0;
+      self.trackTimeMax = e.target.duration;
+    });
+
+    this.audio.ontimeupdate = (e) => {
+      self.trackTimeCurrent = e.target.currentTime;
+      self.time = Math.trunc(100 / self.trackTimeMax * self.trackTimeCurrent);
+    }
+
+    this.audio.addEventListener("canplay", () => {
+      self.havePlay = true;
+      self.playClick();
+    });
+
+    this.audio.addEventListener("ended", () => {
+      self.trackTimeCurrent = self.trackTimeMax;
+      self.nextClick();
+    });
+  },
+
 };
 </script>
 
