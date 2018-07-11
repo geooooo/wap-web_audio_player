@@ -214,6 +214,8 @@ export default {
       let fr = new FileReader();
       fr.onload = file => {
         self.audio.src = file.target.result;
+        self.audio.playbackRate = (this.speed / 100).toFixed(2);
+        self.audio.volume = (this.volume / 100).toFixed(2);
       };
       fr.readAsDataURL(track.track.file);
     },
@@ -404,10 +406,6 @@ export default {
 
   created() {
     let self = this;
-
-    this.audio.loop = false;
-    this.audio.muted = false;
-    this.audio.volume = this.volume / 100;
 
     this.audio.addEventListener("loadedmetadata", (e) => {
       self.trackTimeCurrent = 0;
